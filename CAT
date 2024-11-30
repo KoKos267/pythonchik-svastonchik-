@@ -1,0 +1,49 @@
+class Cat:
+    def __init__(self, name):
+        self.name = name
+        self.energy = 50   # Энергия кота
+        self.hunger = 50   # Уровень голода кота
+        self.happiness = 50  # Уровень счастья кота
+
+    def eat(self):
+        """Котик ест, снижая голод и повышая энергию."""
+        print(f"{self.name} кушает.")
+        self.hunger -= 20
+        self.energy += 10
+        self._check_limits()
+
+    def sleep(self):
+        """Котик спит, восстанавливая энергию."""
+        print(f"{self.name} спит.")
+        self.energy += 30
+        self.hunger += 10
+        self._check_limits()
+
+    def play(self):
+        """Котик играет, повышая счастье, но тратит энергию."""
+        print(f"{self.name} играет.")
+        self.happiness += 20
+        self.energy -= 15
+        self.hunger += 10
+        self._check_limits()
+
+    def status(self):
+        """Выводит текущее состояние котика."""
+        print(f"Состояние {self.name}:")
+        print(f"  Энергия: {self.energy}")
+        print(f"  Голод: {self.hunger}")
+        print(f"  Счастье: {self.happiness}")
+        print("-" * 20)
+
+    def _check_limits(self):
+        """Контролирует, чтобы значения параметров оставались в пределах."""
+        self.energy = max(0, min(self.energy, 100))
+        self.hunger = max(0, min(self.hunger, 100))
+        self.happiness = max(0, min(self.happiness, 100))
+        if self.hunger >= 100:
+            print(f"{self.name} голоден! Покормите его.")
+        if self.energy <= 0:
+            print(f"{self.name} устал и уснул.")
+            self.sleep()
+        if self.happiness <= 0:
+            print(f"{self.name} грустит. Поиграйте с ним!")
