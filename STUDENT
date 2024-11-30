@@ -1,0 +1,52 @@
+class Student:
+    def __init__(self, name, money=100):
+        self.name = name
+        self.money = money  # Деньги у студента
+        self.grades = 50    # Успеваемость
+        self.energy = 50    # Энергия
+
+    def study(self):
+        """Студент учится, повышая успеваемость, но теряет энергию."""
+        print(f"{self.name} учится.")
+        self.grades += 15
+        self.energy -= 20
+        self.money -= 10
+        self._check_status()
+
+    def work(self):
+        """Студент работает, зарабатывая деньги, но теряет успеваемость и энергию."""
+        print(f"{self.name} работает.")
+        self.money += 50
+        self.energy -= 30
+        self.grades -= 5
+        self._check_status()
+
+    def rest(self):
+        """Студент отдыхает, восстанавливая энергию, но тратит деньги."""
+        print(f"{self.name} отдыхает.")
+        self.energy += 40
+        self.money -= 20
+        self._check_status()
+
+    def status(self):
+        """Выводит текущее состояние студента."""
+        print(f"Состояние {self.name}:")
+        print(f"  Деньги: {self.money}")
+        print(f"  Успеваемость: {self.grades}")
+        print(f"  Энергия: {self.energy}")
+        print("-" * 20)
+
+    def _check_status(self):
+        """Контролирует состояние студента и предлагает действия при необходимости."""
+        self.energy = max(0, min(self.energy, 100))
+        self.grades = max(0, min(self.grades, 100))
+        self.money = max(0, self.money)
+        if self.energy <= 0:
+            print(f"{self.name} устал и должен отдохнуть!")
+            self.rest()
+        if self.money <= 0:
+            print(f"{self.name} остался без денег и вынужден работать!")
+            self.work()
+        if self.grades <= 30:
+            print(f"{self.name} рискует провалить учебу! Нужно учиться.")
+            self.study()
