@@ -1,0 +1,40 @@
+# Установка библиотеки colorama
+# Попробуйте выполнить это в своей среде, если библиотека еще не установлена
+# !pip install colorama
+
+# Импортируем необходимые модули из colorama
+import colorama
+from colorama import Fore, Back, Style
+import inspect
+
+# 1. Определяем тип объекта colorama
+print("Тип объекта colorama:", type(colorama))  # <class 'module'>
+
+# 2. Получаем список атрибутов и методов colorama
+colorama_attributes = dir(colorama)
+print("Атрибуты и методы colorama:", colorama_attributes)
+
+# 3. Проверяем наличие ключевых атрибутов и методов
+print("Наличие метода init:", hasattr(colorama, 'init'))  # True
+print("Наличие атрибута Fore:", hasattr(colorama, 'Fore'))  # True
+print("Наличие атрибута Back:", hasattr(colorama, 'Back'))  # True
+print("Наличие атрибута Style:", hasattr(colorama, 'Style'))  # True
+
+# 4. Проверяем, можно ли вызвать init как функцию
+init_func = getattr(colorama, 'init', None)
+print("Можно вызвать init:", callable(init_func))  # True
+
+# 5. Проверяем, является ли объект модулем
+print("colorama является модулем:", inspect.ismodule(colorama))  # True
+
+# 6. Пример использования атрибутов Fore, Back и Style
+# Инициализируем colorama
+colorama.init(autoreset=True)
+
+# Демонстрация работы с цветами и стилями
+print(f"{Fore.RED}Этот текст красного цвета{Style.RESET_ALL}")
+print(f"{Back.GREEN}Этот текст с зеленым фоном{Style.RESET_ALL}")
+print(f"{Style.BRIGHT}Этот текст яркий{Style.RESET_ALL}")
+
+# 7. Демонстрация использования Fore, Back и Style в комбинации
+print(f"{Fore.BLUE}{Back.YELLOW}{Style.DIM}Комбинированный стиль текста{Style.RESET_ALL}")
