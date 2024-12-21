@@ -1,0 +1,17 @@
+class GeneratorIterator:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    def __iter__(self):
+        return self.generator()
+
+    def generator(self):
+        for i in range(self.start, self.end):
+            yield i
+
+gen_iter = GeneratorIterator(1, 5)
+
+for gen in gen_iter:
+    for value in gen_iter:
+        print(value)
