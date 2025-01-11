@@ -1,0 +1,111 @@
+import sqlite3
+
+# Функция для подключения к базе данных SQLite
+def connect_db():
+    return sqlite3.connect('bank.db')
+
+# Функция для создания таблицы пользователей, если она не существует
+def create_table():
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            balance REAL NOT NULL DEFAULT 0.0
+        );
+    ''')
+    conn.commit()
+    conn.close()
+
+# Функция для добавления нового пользователя в систему
+def add_user(name):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO users (name) VALUES (?)', (name,))
+    conn.commit()
+    conn.close()
+
+# Функция для получения баланса пользователя
+def get_balance(user_id):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT balance FROM users WHERE id = ?', (user_id,))
+    balance = cursor.fetchone()
+    conn.close()
+    if balance:
+        return balance[0]
+    else:
+        return None
+
+# Функция для пополнения баланса
+def deposit(user_id, amount):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE users SET balance = balance + ? WHERE id = ?', (amount, user_id))
+    conn.commit()
+    conn.close()
+
+# Функция для снятия денег
+def withdraw(user_id, amount):
+    conn = connect_db()
+    cursor = conn.cursor()
+    current_balance = get_balance(user_id)
+    if current_balance is None or current_balance < amount:
+        print("Ошибка: недостаточно средств для снятия.")
+        conn.close()
+        return False
+    cursor.execute('UPDATE users SET balance = balance - ? WHERE id = ?', (amount, user_id))
+    conn.commit()
+    conn.close()
+    return True
+
+# Основная программа
+def main():
+    create_table()  # Создаем таблицу, если она не существует
+    print("Добро пожаловать в наш банк!")
+    
+    # Регистрация пользователя
+    name = input("Введите ваше имя для регистрации: ")
+    add_user(name)
+    print(f"Здравствуйте, {name}!")
+    
+    # Получаем ID пользователя
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id FROM users WHERE name = ?', (name,))
+    user_id = cursor.fetchone()[0]
+    conn.close()
+    
+    while True:
+        print("\nМеню:")
+        print("1. Вложить деньги")
+        print("2. Узнать баланс")
+        print("3. Снять деньги")
+        print("4. Выйти")
+        
+        choice = input("Выберите опцию: ")
+        
+        if choice == "1":
+            amount = float(input("Введите сумму для депозита: "))
+            deposit(user_id, amount)
+            print(f"Вы внесли {amount} рублей.")
+        
+        elif choice == "2":
+            balance = get_balance(user_id)
+            print(f"Ваш баланс: {balance} рублей.")
+        
+        elif choice == "3":
+            amount = float(input("Введите сумму для снятия: "))
+            if withdraw(user_id, amount):
+                print(f"Вы сняли {amount} рублей.")
+        
+        elif choice == "4":
+            print("Спасибо за использование нашего банка. До свидания!")
+            break
+        
+        else:
+            print("Неверный выбор, пожалуйста, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()
